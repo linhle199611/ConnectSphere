@@ -1,4 +1,4 @@
-#ConectSphere base on Gun Chat Dapp
+# ConectSphere base on Gun Chat Dapp
 
 A decentralized chat app built with [GUN](https://gun.eco/). 
 
