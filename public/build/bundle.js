@@ -5135,11 +5135,11 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
+    	child_ctx[16] = list[i];
     	return child_ctx;
     }
 
-    // (107:2) {:else}
+    // (255:2) {:else}
     function create_else_block$1(ctx) {
     	let main;
     	let login;
@@ -5150,7 +5150,7 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			create_component(login.$$.fragment);
-    			add_location(main, file$2, 107, 4, 3095);
+    			add_location(main, file$2, 255, 4, 9219);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
@@ -5177,35 +5177,37 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(107:2) {:else}",
+    		source: "(255:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:2) {#if $username}
+    // (226:2) {#if $username}
     function create_if_block$1(ctx) {
     	let main;
     	let each_blocks = [];
     	let each_1_lookup = new Map();
     	let t0;
-    	let div;
+    	let div0;
     	let t1;
     	let form;
     	let input;
     	let t2;
-    	let button;
+    	let button0;
     	let t3;
-    	let button_disabled_value;
+    	let button0_disabled_value;
     	let t4;
-    	let if_block_anchor;
+    	let t5;
+    	let div1;
+    	let button1;
     	let current;
     	let mounted;
     	let dispose;
     	let each_value = /*messages*/ ctx[1];
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*message*/ ctx[14].when;
+    	const get_key = ctx => /*message*/ ctx[16].when;
     	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -5225,27 +5227,33 @@ var app = (function () {
     			}
 
     			t0 = space();
-    			div = element("div");
+    			div0 = element("div");
     			t1 = space();
     			form = element("form");
     			input = element("input");
     			t2 = space();
-    			button = element("button");
+    			button0 = element("button");
     			t3 = text("💥");
     			t4 = space();
     			if (if_block) if_block.c();
-    			if_block_anchor = empty();
-    			attr_dev(div, "class", "dummy");
-    			add_location(div, file$2, 85, 6, 2546);
-    			add_location(main, file$2, 80, 4, 2378);
+    			t5 = space();
+    			div1 = element("div");
+    			button1 = element("button");
+    			button1.textContent = "Snapshot";
+    			attr_dev(div0, "class", "dummy");
+    			add_location(div0, file$2, 231, 6, 8574);
+    			add_location(main, file$2, 226, 4, 8406);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "placeholder", "Type a message...");
     			attr_dev(input, "maxlength", "100");
-    			add_location(input, file$2, 89, 6, 2666);
-    			attr_dev(button, "type", "submit");
-    			button.disabled = button_disabled_value = !/*newMessage*/ ctx[0];
-    			add_location(button, file$2, 91, 6, 2769);
-    			add_location(form, file$2, 88, 4, 2613);
+    			add_location(input, file$2, 235, 6, 8694);
+    			attr_dev(button0, "type", "submit");
+    			button0.disabled = button0_disabled_value = !/*newMessage*/ ctx[0];
+    			add_location(button0, file$2, 237, 6, 8797);
+    			add_location(form, file$2, 234, 4, 8641);
+    			add_location(button1, file$2, 252, 6, 9140);
+    			attr_dev(div1, "class", "snapshot");
+    			add_location(div1, file$2, 251, 4, 9110);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
@@ -5255,18 +5263,20 @@ var app = (function () {
     			}
 
     			append_dev(main, t0);
-    			append_dev(main, div);
-    			/*div_binding*/ ctx[9](div);
+    			append_dev(main, div0);
+    			/*div0_binding*/ ctx[9](div0);
     			insert_dev(target, t1, anchor);
     			insert_dev(target, form, anchor);
     			append_dev(form, input);
     			set_input_value(input, /*newMessage*/ ctx[0]);
     			append_dev(form, t2);
-    			append_dev(form, button);
-    			append_dev(button, t3);
+    			append_dev(form, button0);
+    			append_dev(button0, t3);
     			insert_dev(target, t4, anchor);
     			if (if_block) if_block.m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
+    			insert_dev(target, t5, anchor);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, button1);
     			current = true;
 
     			if (!mounted) {
@@ -5282,7 +5292,8 @@ var app = (function () {
     						false
     					),
     					listen_dev(input, "input", /*input_input_handler*/ ctx[10]),
-    					listen_dev(form, "submit", prevent_default(/*sendMessage*/ ctx[8]), false, true, false)
+    					listen_dev(form, "submit", prevent_default(/*sendMessage*/ ctx[8]), false, true, false),
+    					listen_dev(button1, "click", startSnapshot, false, false, false)
     				];
 
     				mounted = true;
@@ -5304,8 +5315,8 @@ var app = (function () {
     				set_input_value(input, /*newMessage*/ ctx[0]);
     			}
 
-    			if (!current || dirty & /*newMessage*/ 1 && button_disabled_value !== (button_disabled_value = !/*newMessage*/ ctx[0])) {
-    				prop_dev(button, "disabled", button_disabled_value);
+    			if (!current || dirty & /*newMessage*/ 1 && button0_disabled_value !== (button0_disabled_value = !/*newMessage*/ ctx[0])) {
+    				prop_dev(button0, "disabled", button0_disabled_value);
     			}
 
     			if (!/*canAutoScroll*/ ctx[3]) {
@@ -5314,7 +5325,7 @@ var app = (function () {
     				} else {
     					if_block = create_if_block_1(ctx);
     					if_block.c();
-    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    					if_block.m(t5.parentNode, t5);
     				}
     			} else if (if_block) {
     				if_block.d(1);
@@ -5344,12 +5355,13 @@ var app = (function () {
     				each_blocks[i].d();
     			}
 
-    			/*div_binding*/ ctx[9](null);
+    			/*div0_binding*/ ctx[9](null);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(form);
     			if (detaching) detach_dev(t4);
     			if (if_block) if_block.d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
+    			if (detaching) detach_dev(t5);
+    			if (detaching) detach_dev(div1);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -5359,14 +5371,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(80:2) {#if $username}",
+    		source: "(226:2) {#if $username}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (82:6) {#each messages as message (message.when)}
+    // (228:6) {#each messages as message (message.when)}
     function create_each_block(key_1, ctx) {
     	let first;
     	let chatmessage;
@@ -5374,7 +5386,7 @@ var app = (function () {
 
     	chatmessage = new ChatMessage({
     			props: {
-    				message: /*message*/ ctx[14],
+    				message: /*message*/ ctx[16],
     				sender: /*$username*/ ctx[6]
     			},
     			$$inline: true
@@ -5396,7 +5408,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			const chatmessage_changes = {};
-    			if (dirty & /*messages*/ 2) chatmessage_changes.message = /*message*/ ctx[14];
+    			if (dirty & /*messages*/ 2) chatmessage_changes.message = /*message*/ ctx[16];
     			if (dirty & /*$username*/ 64) chatmessage_changes.sender = /*$username*/ ctx[6];
     			chatmessage.$set(chatmessage_changes);
     		},
@@ -5419,14 +5431,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(82:6) {#each messages as message (message.when)}",
+    		source: "(228:6) {#each messages as message (message.when)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (96:4) {#if !canAutoScroll}
+    // (241:4) {#if !canAutoScroll}
     function create_if_block_1(ctx) {
     	let div;
     	let button;
@@ -5442,9 +5454,9 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t = text("\r\n\r\n        👇");
     			toggle_class(button, "red", /*unreadMessages*/ ctx[4]);
-    			add_location(button, file$2, 97, 6, 2909);
+    			add_location(button, file$2, 242, 6, 8935);
     			attr_dev(div, "class", "scroll-button");
-    			add_location(div, file$2, 96, 4, 2874);
+    			add_location(div, file$2, 241, 4, 8900);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5485,14 +5497,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(96:4) {#if !canAutoScroll}",
+    		source: "(241:4) {#if !canAutoScroll}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (99:8) {#if unreadMessages}
+    // (244:8) {#if unreadMessages}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -5512,7 +5524,7 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(99:8) {#if unreadMessages}",
+    		source: "(244:8) {#if unreadMessages}",
     		ctx
     	});
 
@@ -5540,7 +5552,7 @@ var app = (function () {
     			div = element("div");
     			if_block.c();
     			attr_dev(div, "class", "container");
-    			add_location(div, file$2, 78, 0, 2330);
+    			add_location(div, file$2, 224, 0, 8358);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5603,6 +5615,11 @@ var app = (function () {
     	return block;
     }
 
+    async function startSnapshot() {
+    	
+    } // Clear snapshot
+    // await db.get('chat').get('snapshot').put(null);
+
     function instance$2($$self, $$props, $$invalidate) {
     	let debouncedWatchScroll;
     	let $username;
@@ -5613,6 +5630,7 @@ var app = (function () {
     	const db = browser();
     	let newMessage;
     	let messages = [];
+    	let messagePuts = [];
     	let scrollBottom;
     	let lastScrollTop;
     	let canAutoScroll = true;
@@ -5654,7 +5672,8 @@ var app = (function () {
     					
     				};
 
-    				if (message.what) {
+    				// Don't record message if it's undefined, so that the duplicate keys error doesn't happen
+    				if (message.what && message.what !== "undefined" && message.when !== "undefined") {
     					$$invalidate(1, messages = [...messages.slice(-100), message].sort((a, b) => a.when - b.when));
 
     					if (canAutoScroll) {
@@ -5667,12 +5686,86 @@ var app = (function () {
     		});
     	});
 
+    	// Trying to get the snapshot to be separated by user, but gun.js is being difficult to work with
+    	// Especially with recording the local state, see below
+    	// messagePuts.forEach((messagePut) => {
+    	//   // Record local state of chat messages for the user
+    	//   messagePut.then((data) => {
+    	//     console.log('Message put data:', data);
+    	//     if (data.who && data.what !== 'undefined') {
+    	//       db.get('chat').get('snapshot').set(data);
+    	//     }
+    	//   });
+    	// });
+    	// I can either use .set() or .put() to record the local state of chat messages for the user
+    	// But .set() just adds the data with a unique id, so the same message can be added multiple times
+    	// and with .put(), it only returns the three properties (who, what, when) of the message, so it only records one message
+    	// // Record local state of chat messages for the user
+    	// messages.forEach((message) => {
+    	//   console.log(message);
+    	//   if (message.who && message.what !== 'undefined') {
+    	//     db.get('chat').get('snapshot').get('asdfghjkl').put(message);
+    	//   }
+    	// });
+    	// console.log('Snapshot');
+    	// db.get('chat').get('snapshot').get('asdfghjkl').once(async (data, id) => {
+    	//   if (data) {
+    	//     console.log('Data:', data);
+    	//   }
+    	// });
+    	// await db.get('chat').get('snapshot').get($username).once(async (data, id) => {
+    	//   if (data) {
+    	//     console.log(data);
+    	//     // Key for end-to-end encryption
+    	//     const key = '#foo';
+    	//     var message = {
+    	//       // transform the data
+    	//       who: await db.user(data).get('alias'), // a user might lie who they are! So let the user system detect whose data it is.
+    	//       what: (await SEA.decrypt(data.what, key)) + '', // force decrypt as text.
+    	//       when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
+    	//     };
+    	//     console.log(message);
+    	//   }
+    	// });
+    	// Console log the snapshot after 5 seconds
+    	// setTimeout(() => {
+    	//   console.log('Snapshot');
+    	//   db.get('chat').get('snapshot').get(username).once(async (data, id) => {
+    	//     await console.log(data);
+    	//   });
+    	//   console.log('End of Snapshot');
+    	// }, 5000);
+    	// Clear recordingPeers
+    	// recordingPeers.clear();
+    	// // Clear recordingPeers in other peers
+    	// db.get('chat').get('snapshot').get('marker').put({ restart: true });
+    	// // Clear snapshot
+    	// db.get('chat').get('snapshot').put(null);
+    	// // Send marker message to all peers
+    	// sendMarkerMessage();
+    	// // Start recording messages from peers
+    	// Object.keys(db._.opt.peers).forEach(peer => recordingPeers.add(peer));
+    	function sendMarkerMessage() {
+    		// Send marker message with the sender's URL
+    		db.get("chat").get("snapshot").get("marker").put({
+    			reset: false,
+    			received: false,
+    			sender: window.location.href
+    		});
+    	}
+
     	async function sendMessage() {
     		const secret = await SEA.encrypt(newMessage, "#foo");
     		const message = user.get("all").set({ what: secret });
     		const index = new Date().toISOString();
     		db.get("chat").get(index).put(message);
+
+    		// Maybe I could push the put into the set from: https://gun.eco/docs/API#-a-name-set-a-gun-set-data-callback-
+    		// const messagePut = db.get('chat').get(index).put(message);
+    		// console.log(messagePut);
+    		// db.get('chat').get('messagePut1234').set(message);
     		$$invalidate(0, newMessage = "");
+
     		$$invalidate(3, canAutoScroll = true);
     		autoScroll();
     	}
@@ -5683,7 +5776,7 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Chat> was created with unknown prop '${key}'`);
     	});
 
-    	function div_binding($$value) {
+    	function div0_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
     			scrollBottom = $$value;
     			$$invalidate(2, scrollBottom);
@@ -5706,12 +5799,15 @@ var app = (function () {
     		db,
     		newMessage,
     		messages,
+    		messagePuts,
     		scrollBottom,
     		lastScrollTop,
     		canAutoScroll,
     		unreadMessages,
     		autoScroll,
     		watchScroll,
+    		startSnapshot,
+    		sendMarkerMessage,
     		sendMessage,
     		debouncedWatchScroll,
     		$username
@@ -5720,6 +5816,7 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("newMessage" in $$props) $$invalidate(0, newMessage = $$props.newMessage);
     		if ("messages" in $$props) $$invalidate(1, messages = $$props.messages);
+    		if ("messagePuts" in $$props) messagePuts = $$props.messagePuts;
     		if ("scrollBottom" in $$props) $$invalidate(2, scrollBottom = $$props.scrollBottom);
     		if ("lastScrollTop" in $$props) lastScrollTop = $$props.lastScrollTop;
     		if ("canAutoScroll" in $$props) $$invalidate(3, canAutoScroll = $$props.canAutoScroll);
@@ -5743,7 +5840,7 @@ var app = (function () {
     		$username,
     		autoScroll,
     		sendMessage,
-    		div_binding,
+    		div0_binding,
     		input_input_handler
     	];
     }
