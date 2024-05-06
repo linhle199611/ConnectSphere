@@ -16,6 +16,16 @@
   let canAutoScroll = true;
   let unreadMessages = false;
 
+  //Lamport timestamp
+  let currentLPtime = 0;
+  let count = 0;
+  let mytime = 0;
+  let updateTime = 0;
+  
+  function getcurrentLPtimefromRest(){
+
+  }
+
   function autoScroll() {
     setTimeout(() => scrollBottom?.scrollIntoView({ behavior: 'auto' }), 50);
     unreadMessages = false;
@@ -50,10 +60,21 @@
             // transform the data
             who: await db.user(data).get('alias'), // a user might lie who they are! So let the user system detect whose data it is.
             what: (await SEA.decrypt(data.what, key)) + '', // force decrypt as text.
-            when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
+            //when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
+            when: currentLPtime,
           };
 
           if (message.what) {
+
+
+            console.log("------------------------------------");
+            console.log(message.who);
+            console.log(message.what);
+            currentLPtime = Math.max(message.when, currentLPtime) + 1;
+            console.log("LP time:" + currentLPtime);
+            //console.log("Real time:" + message.when);
+            console.log("------------------------------------");
+
             messages = [...messages.slice(-100), message].sort((a, b) => a.when - b.when);
             if (canAutoScroll) {
               autoScroll();
@@ -66,6 +87,7 @@
   });
 
   async function sendMessage() {
+
     const secret = await SEA.encrypt(newMessage, '#foo');
     const message = user.get('all').set({ what: secret });
     const index = new Date().toISOString();
@@ -89,7 +111,7 @@
     <form on:submit|preventDefault={sendMessage}>
       <input type="text" placeholder="Type a message..." bind:value={newMessage} maxlength="100" />
 
-      <button type="submit" disabled={!newMessage}>💥</button>
+      <button type="submit" disabled={!newMessage}>Send</button>
     </form>
 
 
