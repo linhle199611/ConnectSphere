@@ -195,6 +195,9 @@ var app = (function () {
     function set_input_value(input, value) {
         input.value = value == null ? '' : value;
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
     function toggle_class(element, name, toggle) {
         element.classList[toggle ? 'add' : 'remove'](name);
     }
@@ -4401,24 +4404,132 @@ var app = (function () {
     const db = browser();
 
     // Gun User
-    const user = db.user().recall({sessionStorage: true});
+    const user = db.user().recall({ sessionStorage: true });
 
     // Current User's username
     const username = writable('');
 
     user.get('alias').on(v => username.set(v));
+    // WebSocket connection
+    let ws;
 
-    db.on('auth', async(event) => {
-        const alias = await user.get('alias'); // username string
-        username.set(alias);
+    db.on('auth', async (event) => {
+        const alias = await user.get('alias'); // Get the user's alias
+        if (alias) {
+            username.set(alias);
+            console.log(`signed in as ${alias}`);
+            // console.log(JSON.stringify({ type: 'JOIN', payload: { username: alias } }));
 
-        console.log(`signed in as ${alias}`);
+
+            // ws = new WebSocket('wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production/');
+            ws = new WebSocket('ws://localhost:8080/');
+            // console.log('after json print');
+            // Handle WebSocket open event
+            // Assume `peers` is an array of WebSocket connections to the peers
+            let peers = [];
+
+            // Function to broadcast a message to all peers
+            // function broadcast(message) {
+            //     peers.forEach(peer => {
+            //         if (peer.readyState === WebSocket.OPEN) {
+            //             peer.send(message);
+            //         }
+            //     });
+            // }
+
+            ws.onopen = (event) => {
+
+
+                // console.log('sending a message');
+                // console.log(send_stuff);
+                ws.send(JSON.stringify({ type: 'JOIN', payload: { username: alias } }));
+                // ws.send(send_stuff);
+                console.log('message sent');
+            };
+
+            // Handle WebSocket messages
+            // ws.onmessage = (event) => {
+
+            //   console.log('msg received')
+            //   console.log(event)
+
+            //   const requestURL = `https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23`;
+
+            //   // Send a request for users
+            //   fetch(requestURL)
+            //   .then(response => {
+            //       console.log('Response received:', response);
+            //   })
+            //   .catch(error => {
+            //       console.error('Error sending request:', error);
+            //   });
+
+            // };
+            // Handle WebSocket messages
+            ws.onmessage = (event) => {
+                console.log('Message received:', event);
+                // const message = JSON.parse(event.data);
+                // console.log('Message data:', message);
+
+                if (event.data === 'JOINED') {
+                    console.log('Joined the server');
+                    // Broadcast a message to all peers
+                    ws.send(JSON.stringify({ type: 'BROADCAST', payload: `Hello, I\'m ${alias}! `}));
+                }
+
+                const requestURL = 'https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23';
+
+                // Send a request for users
+                setTimeout(() => {
+                    console.log('Delayed console.log');
+                    fetch(requestURL, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                }, 5); // 5 milliseconds delay
+
+                setTimeout(() => {
+                    fetch(requestURL, {
+                        method: 'GET',
+                        credentials: 'include'
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json(); // Assuming the server responds with JSON
+                        })
+                        .then(data => {
+                            console.log('Data received:', data);
+                            const users = data.users;
+                            console.log(`userlist = `, users);
+                            users.sort((a, b) => a.ConnectionId.localeCompare(b.ConnectionId));
+
+                            // Getting the highest lexicographical ConnectionId
+                            const highestConnectionId = users[users.length - 1].ConnectionId;
+
+                            // Printing the highest lexicographical ConnectionId
+                            console.log("Leader:", highestConnectionId);
+                        })
+                        .catch(error => {
+                            console.error('Error sending request:', error);
+                        });
+                }, 10); // 10 milliseconds delay
+
+            };
+
+            ws.onclose = (event) => {
+                console.log('WebSocket closed:', event);
+                // When the WebSocket closes, remove it from the list
+                peers = peers.filter(peer => peer !== alias);
+            };
+        }
     });
 
-    /* src/Login.svelte generated by Svelte v3.38.3 */
+    /* src\Login.svelte generated by Svelte v3.38.3 */
 
-    const { console: console_1 } = globals;
-    const file$4 = "src/Login.svelte";
+    const { console: console_1$1 } = globals;
+    const file$4 = "src\\Login.svelte";
 
     function create_fragment$4(ctx) {
     	let label0;
@@ -4453,20 +4564,20 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Sign Up";
     			attr_dev(label0, "for", "username");
-    			add_location(label0, file$4, 22, 0, 402);
+    			add_location(label0, file$4, 22, 0, 424);
     			attr_dev(input0, "name", "username");
     			attr_dev(input0, "minlength", "3");
     			attr_dev(input0, "maxlength", "16");
-    			add_location(input0, file$4, 23, 0, 441);
+    			add_location(input0, file$4, 23, 0, 464);
     			attr_dev(label1, "for", "password");
-    			add_location(label1, file$4, 25, 0, 519);
+    			add_location(label1, file$4, 25, 0, 544);
     			attr_dev(input1, "name", "password");
     			attr_dev(input1, "type", "password");
-    			add_location(input1, file$4, 26, 0, 558);
+    			add_location(input1, file$4, 26, 0, 584);
     			attr_dev(button0, "class", "login");
-    			add_location(button0, file$4, 28, 0, 623);
+    			add_location(button0, file$4, 28, 0, 651);
     			attr_dev(button1, "class", "login");
-    			add_location(button1, file$4, 29, 0, 677);
+    			add_location(button1, file$4, 29, 0, 706);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4560,7 +4671,7 @@ var app = (function () {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Login> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$1.warn(`<Login> was created with unknown prop '${key}'`);
     	});
 
     	function input0_input_handler() {
@@ -4601,9 +4712,9 @@ var app = (function () {
     	}
     }
 
-    /* src/ChatMessage.svelte generated by Svelte v3.38.3 */
+    /* src\ChatMessage.svelte generated by Svelte v3.38.3 */
 
-    const file$3 = "src/ChatMessage.svelte";
+    const file$3 = "src\\ChatMessage.svelte";
 
     function create_fragment$3(ctx) {
     	let div1;
@@ -4630,13 +4741,13 @@ var app = (function () {
     			time.textContent = `${/*ts*/ ctx[3].toLocaleTimeString()}`;
     			if (img.src !== (img_src_value = /*avatar*/ ctx[2])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "avatar");
-    			add_location(img, file$3, 12, 2, 295);
-    			add_location(p, file$3, 14, 4, 362);
-    			add_location(time, file$3, 16, 4, 389);
+    			add_location(img, file$3, 12, 2, 307);
+    			add_location(p, file$3, 14, 4, 376);
+    			add_location(time, file$3, 16, 4, 405);
     			attr_dev(div0, "class", "message-text");
-    			add_location(div0, file$3, 13, 2, 331);
+    			add_location(div0, file$3, 13, 2, 344);
     			attr_dev(div1, "class", `message ${/*messageClass*/ ctx[1]}`);
-    			add_location(div1, file$3, 11, 0, 253);
+    			add_location(div1, file$3, 11, 0, 264);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5130,16 +5241,18 @@ var app = (function () {
 
     var lodash_debounce = debounce;
 
-    /* src/Chat.svelte generated by Svelte v3.38.3 */
-    const file$2 = "src/Chat.svelte";
+    /* src\Chat.svelte generated by Svelte v3.38.3 */
+
+    const { console: console_1 } = globals;
+    const file$2 = "src\\Chat.svelte";
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
+    	child_ctx[18] = list[i];
     	return child_ctx;
     }
 
-    // (107:2) {:else}
+    // (129:2) {:else}
     function create_else_block$1(ctx) {
     	let main;
     	let login;
@@ -5150,7 +5263,7 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			create_component(login.$$.fragment);
-    			add_location(main, file$2, 107, 4, 2988);
+    			add_location(main, file$2, 129, 4, 3697);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
@@ -5177,14 +5290,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(107:2) {:else}",
+    		source: "(129:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:2) {#if $username}
+    // (102:2) {#if $username}
     function create_if_block$1(ctx) {
     	let main;
     	let each_blocks = [];
@@ -5205,7 +5318,7 @@ var app = (function () {
     	let dispose;
     	let each_value = /*messages*/ ctx[1];
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*message*/ ctx[14].when;
+    	const get_key = ctx => /*message*/ ctx[18].when;
     	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -5231,21 +5344,21 @@ var app = (function () {
     			input = element("input");
     			t2 = space();
     			button = element("button");
-    			t3 = text("💥");
+    			t3 = text("Send");
     			t4 = space();
     			if (if_block) if_block.c();
     			if_block_anchor = empty();
     			attr_dev(div, "class", "dummy");
-    			add_location(div, file$2, 85, 6, 2461);
-    			add_location(main, file$2, 80, 4, 2298);
+    			add_location(div, file$2, 107, 6, 3146);
+    			add_location(main, file$2, 102, 4, 2978);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "placeholder", "Type a message...");
     			attr_dev(input, "maxlength", "100");
-    			add_location(input, file$2, 89, 6, 2577);
+    			add_location(input, file$2, 111, 6, 3266);
     			attr_dev(button, "type", "submit");
     			button.disabled = button_disabled_value = !/*newMessage*/ ctx[0];
-    			add_location(button, file$2, 91, 6, 2678);
-    			add_location(form, file$2, 88, 4, 2525);
+    			add_location(button, file$2, 113, 6, 3369);
+    			add_location(form, file$2, 110, 4, 3213);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
@@ -5359,14 +5472,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(80:2) {#if $username}",
+    		source: "(102:2) {#if $username}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (82:6) {#each messages as message (message.when)}
+    // (104:6) {#each messages as message (message.when)}
     function create_each_block(key_1, ctx) {
     	let first;
     	let chatmessage;
@@ -5374,7 +5487,7 @@ var app = (function () {
 
     	chatmessage = new ChatMessage({
     			props: {
-    				message: /*message*/ ctx[14],
+    				message: /*message*/ ctx[18],
     				sender: /*$username*/ ctx[6]
     			},
     			$$inline: true
@@ -5396,7 +5509,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			const chatmessage_changes = {};
-    			if (dirty & /*messages*/ 2) chatmessage_changes.message = /*message*/ ctx[14];
+    			if (dirty & /*messages*/ 2) chatmessage_changes.message = /*message*/ ctx[18];
     			if (dirty & /*$username*/ 64) chatmessage_changes.sender = /*$username*/ ctx[6];
     			chatmessage.$set(chatmessage_changes);
     		},
@@ -5419,14 +5532,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(82:6) {#each messages as message (message.when)}",
+    		source: "(104:6) {#each messages as message (message.when)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (96:4) {#if !canAutoScroll}
+    // (118:4) {#if !canAutoScroll}
     function create_if_block_1(ctx) {
     	let div;
     	let button;
@@ -5440,11 +5553,11 @@ var app = (function () {
     			div = element("div");
     			button = element("button");
     			if (if_block) if_block.c();
-    			t = text("\n\n        👇");
+    			t = text("\r\n\r\n        👇");
     			toggle_class(button, "red", /*unreadMessages*/ ctx[4]);
-    			add_location(button, file$2, 97, 6, 2812);
+    			add_location(button, file$2, 119, 6, 3511);
     			attr_dev(div, "class", "scroll-button");
-    			add_location(div, file$2, 96, 4, 2778);
+    			add_location(div, file$2, 118, 4, 3476);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5485,14 +5598,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(96:4) {#if !canAutoScroll}",
+    		source: "(118:4) {#if !canAutoScroll}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (99:8) {#if unreadMessages}
+    // (121:8) {#if unreadMessages}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -5512,7 +5625,7 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(99:8) {#if unreadMessages}",
+    		source: "(121:8) {#if unreadMessages}",
     		ctx
     	});
 
@@ -5540,7 +5653,7 @@ var app = (function () {
     			div = element("div");
     			if_block.c();
     			attr_dev(div, "class", "container");
-    			add_location(div, file$2, 78, 0, 2252);
+    			add_location(div, file$2, 100, 0, 2930);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5603,6 +5716,10 @@ var app = (function () {
     	return block;
     }
 
+    function getcurrentLPtimefromRest() {
+    	
+    }
+
     function instance$2($$self, $$props, $$invalidate) {
     	let debouncedWatchScroll;
     	let $username;
@@ -5617,6 +5734,13 @@ var app = (function () {
     	let lastScrollTop;
     	let canAutoScroll = true;
     	let unreadMessages = false;
+
+    	//Lamport timestamp
+    	let currentLPtime = 0;
+
+    	let count = 0;
+    	let mytime = 0;
+    	let updateTime = 0;
 
     	function autoScroll() {
     		setTimeout(() => scrollBottom?.scrollIntoView({ behavior: "auto" }), 50);
@@ -5650,11 +5774,20 @@ var app = (function () {
     					// transform the data
     					who: await db.user(data).get("alias"), // a user might lie who they are! So let the user system detect whose data it is.
     					what: await SEA.decrypt(data.what, key) + "", // force decrypt as text.
-    					when: browser.state.is(data, "what"), // get the internal timestamp for the what property.
-    					
+    					//when: GUN.state.is(data, 'what'), // get the internal timestamp for the what property.
+    					when: currentLPtime
     				};
 
     				if (message.what) {
+    					console.log("------------------------------------");
+    					console.log(message.who);
+    					console.log(message.what);
+    					currentLPtime = Math.max(message.when, currentLPtime) + 1;
+    					console.log("LP time:" + currentLPtime);
+
+    					//console.log("Real time:" + message.when);
+    					console.log("------------------------------------");
+
     					$$invalidate(1, messages = [...messages.slice(-100), message].sort((a, b) => a.when - b.when));
 
     					if (canAutoScroll) {
@@ -5680,7 +5813,7 @@ var app = (function () {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Chat> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Chat> was created with unknown prop '${key}'`);
     	});
 
     	function div_binding($$value) {
@@ -5710,6 +5843,11 @@ var app = (function () {
     		lastScrollTop,
     		canAutoScroll,
     		unreadMessages,
+    		currentLPtime,
+    		count,
+    		mytime,
+    		updateTime,
+    		getcurrentLPtimefromRest,
     		autoScroll,
     		watchScroll,
     		sendMessage,
@@ -5724,6 +5862,10 @@ var app = (function () {
     		if ("lastScrollTop" in $$props) lastScrollTop = $$props.lastScrollTop;
     		if ("canAutoScroll" in $$props) $$invalidate(3, canAutoScroll = $$props.canAutoScroll);
     		if ("unreadMessages" in $$props) $$invalidate(4, unreadMessages = $$props.unreadMessages);
+    		if ("currentLPtime" in $$props) currentLPtime = $$props.currentLPtime;
+    		if ("count" in $$props) count = $$props.count;
+    		if ("mytime" in $$props) mytime = $$props.mytime;
+    		if ("updateTime" in $$props) updateTime = $$props.updateTime;
     		if ("debouncedWatchScroll" in $$props) $$invalidate(5, debouncedWatchScroll = $$props.debouncedWatchScroll);
     	};
 
@@ -5762,18 +5904,19 @@ var app = (function () {
     	}
     }
 
-    /* src/Header.svelte generated by Svelte v3.38.3 */
-    const file$1 = "src/Header.svelte";
+    /* src\Header.svelte generated by Svelte v3.38.3 */
+    const file$1 = "src\\Header.svelte";
 
-    // (21:4) {:else}
+    // (28:4) {:else}
     function create_else_block(ctx) {
     	let h3;
 
     	const block = {
     		c: function create() {
     			h3 = element("h3");
-    			h3.textContent = "Gun.js Chat";
-    			add_location(h3, file$1, 22, 6, 459);
+    			h3.textContent = "Chat";
+    			set_style(h3, "color", "yellow");
+    			add_location(h3, file$1, 29, 6, 658);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -5788,14 +5931,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(21:4) {:else}",
+    		source: "(28:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (12:2) {#if $username}
+    // (19:2) {#if $username}
     function create_if_block(ctx) {
     	let div;
     	let span;
@@ -5822,15 +5965,15 @@ var app = (function () {
     			t3 = space();
     			button = element("button");
     			button.textContent = "Sign Out";
-    			add_location(strong, file$1, 14, 18, 224);
-    			add_location(span, file$1, 14, 6, 212);
-    			if (img.src !== (img_src_value = `https://avatars.dicebear.com/api/initials/${/*$username*/ ctx[0]}.svg`)) attr_dev(img, "src", img_src_value);
+    			add_location(strong, file$1, 21, 18, 413);
+    			add_location(span, file$1, 21, 6, 401);
+    			if (img.src !== (img_src_value = `https://api.dicebear.com/8.x/pixel-art/svg?seed=${/*$username*/ ctx[0]}`)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "avatar");
-    			add_location(img, file$1, 15, 6, 266);
+    			add_location(img, file$1, 22, 6, 456);
     			attr_dev(div, "class", "user-bio");
-    			add_location(div, file$1, 12, 4, 176);
+    			add_location(div, file$1, 19, 4, 363);
     			attr_dev(button, "class", "signout-button");
-    			add_location(button, file$1, 18, 4, 371);
+    			add_location(button, file$1, 25, 4, 566);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5851,7 +5994,7 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			if (dirty & /*$username*/ 1) set_data_dev(t1, /*$username*/ ctx[0]);
 
-    			if (dirty & /*$username*/ 1 && img.src !== (img_src_value = `https://avatars.dicebear.com/api/initials/${/*$username*/ ctx[0]}.svg`)) {
+    			if (dirty & /*$username*/ 1 && img.src !== (img_src_value = `https://api.dicebear.com/8.x/pixel-art/svg?seed=${/*$username*/ ctx[0]}`)) {
     				attr_dev(img, "src", img_src_value);
     			}
     		},
@@ -5868,7 +6011,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(12:2) {#if $username}",
+    		source: "(19:2) {#if $username}",
     		ctx
     	});
 
@@ -5892,11 +6035,12 @@ var app = (function () {
     		c: function create() {
     			header = element("header");
     			h1 = element("h1");
-    			h1.textContent = "🔫💬";
+    			h1.textContent = "ConnectSphere";
     			t1 = space();
     			if_block.c();
-    			add_location(h1, file$1, 10, 0, 140);
-    			add_location(header, file$1, 9, 0, 131);
+    			set_style(h1, "color", "yellow");
+    			add_location(h1, file$1, 17, 0, 294);
+    			add_location(header, file$1, 16, 0, 284);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5949,6 +6093,11 @@ var app = (function () {
     	function signout() {
     		user.leave();
     		username.set("");
+
+    		// Send a 'LEAVE' message to the WebSocket server
+    		if (ws && ws.readyState === WebSocket.OPEN) {
+    			ws.close();
+    		}
     	}
 
     	const writable_props = [];
@@ -5957,7 +6106,7 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Header> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ username, user, signout, $username });
+    	$$self.$capture_state = () => ({ username, user, ws, signout, $username });
     	return [$username, signout];
     }
 
@@ -5975,8 +6124,8 @@ var app = (function () {
     	}
     }
 
-    /* src/App.svelte generated by Svelte v3.38.3 */
-    const file = "src/App.svelte";
+    /* src\App.svelte generated by Svelte v3.38.3 */
+    const file = "src\\App.svelte";
 
     function create_fragment(ctx) {
     	let div;
@@ -5994,7 +6143,7 @@ var app = (function () {
     			t = space();
     			create_component(chat.$$.fragment);
     			attr_dev(div, "class", "app");
-    			add_location(div, file, 5, 0, 96);
+    			add_location(div, file, 5, 0, 101);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

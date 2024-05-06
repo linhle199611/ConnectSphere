@@ -21,88 +21,116 @@ const query = 'https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.
 export let ws;
 
 db.on('auth', async (event) => {
-  const alias = await user.get('alias'); // Get the user's alias
-  if (alias) {
-    username.set(alias);
-    console.log(`signed in as ${alias}`);
-    // console.log(JSON.stringify({ type: 'JOIN', payload: { username: alias } }));
+    const alias = await user.get('alias'); // Get the user's alias
+    if (alias) {
+        username.set(alias);
+        console.log(`signed in as ${alias}`);
+        // console.log(JSON.stringify({ type: 'JOIN', payload: { username: alias } }));
 
 
-    ws = new WebSocket('wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production/');
-    // console.log('after json print');
-    // Handle WebSocket open event
-    ws.onopen = (event) => {
+        // ws = new WebSocket('wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production/');
+        ws = new WebSocket('ws://localhost:8080/');
+        // console.log('after json print');
+        // Handle WebSocket open event
+        // Assume `peers` is an array of WebSocket connections to the peers
+        let peers = [];
 
-      const send_stuff = "wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production?username=" + alias;
+        // Function to broadcast a message to all peers
+        // function broadcast(message) {
+        //     peers.forEach(peer => {
+        //         if (peer.readyState === WebSocket.OPEN) {
+        //             peer.send(message);
+        //         }
+        //     });
+        // }
+
+        ws.onopen = (event) => {
+
+            const send_stuff = "wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production?username=" + alias;
 
 
-      // console.log('sending a message');
-      // console.log(send_stuff);
-      ws.send(send_stuff);
-      // console.log('message sent');
-    };
+            // console.log('sending a message');
+            // console.log(send_stuff);
+            ws.send(JSON.stringify({ type: 'JOIN', payload: { username: alias } }));
+            // ws.send(send_stuff);
+            console.log('message sent');
+        };
 
-    // Handle WebSocket messages
-    // ws.onmessage = (event) => {
+        // Handle WebSocket messages
+        // ws.onmessage = (event) => {
 
-    //   console.log('msg received')
-    //   console.log(event)
-      
-    //   const requestURL = `https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23`;
+        //   console.log('msg received')
+        //   console.log(event)
 
-    //   // Send a request for users
-    //   fetch(requestURL)
-    //   .then(response => {
-    //       console.log('Response received:', response);
-    //   })
-    //   .catch(error => {
-    //       console.error('Error sending request:', error);
-    //   });
+        //   const requestURL = `https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23`;
 
-    // };
-// Handle WebSocket messages
-    ws.onmessage = (event) => {
-      // console.log('Message received:', event);
+        //   // Send a request for users
+        //   fetch(requestURL)
+        //   .then(response => {
+        //       console.log('Response received:', response);
+        //   })
+        //   .catch(error => {
+        //       console.error('Error sending request:', error);
+        //   });
 
-      const requestURL = 'https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23';
+        // };
+        // Handle WebSocket messages
+        ws.onmessage = (event) => {
+            console.log('Message received:', event);
+            // const message = JSON.parse(event.data);
+            // console.log('Message data:', message);
 
-      // Send a request for users
-      setTimeout(() => {
-        console.log('Delayed console.log');
-        fetch(requestURL, {
-            method: 'GET',
-            credentials: 'include'
-        })
-    }, 5); // 5 milliseconds delay
-    
-    setTimeout(() => {
-      fetch(requestURL, {
-          method: 'GET',
-          credentials: 'include'
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json(); // Assuming the server responds with JSON
-      })
-      .then(data => {
-          console.log('Data received:', data);
-          const users = data.users;
-          console.log(`userlist = `, users);
-          users.sort((a, b) => a.ConnectionId.localeCompare(b.ConnectionId));
-  
-          // Getting the highest lexicographical ConnectionId
-          const highestConnectionId = users[users.length - 1].ConnectionId;
-  
-          // Printing the highest lexicographical ConnectionId
-          console.log("Leader:", highestConnectionId);
-      })
-      .catch(error => {
-          console.error('Error sending request:', error);
-      });
-  }, 10); // 10 milliseconds delay
-  
-    };
-  }
+            if (event.data === 'JOINED') {
+                console.log('Joined the server');
+                // Broadcast a message to all peers
+                ws.send(JSON.stringify({ type: 'BROADCAST', payload: `Hello, I\'m ${alias}! `}));
+            }
+
+            const requestURL = 'https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23';
+
+            // Send a request for users
+            setTimeout(() => {
+                console.log('Delayed console.log');
+                fetch(requestURL, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
+            }, 5); // 5 milliseconds delay
+
+            setTimeout(() => {
+                fetch(requestURL, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Assuming the server responds with JSON
+                    })
+                    .then(data => {
+                        console.log('Data received:', data);
+                        const users = data.users;
+                        console.log(`userlist = `, users);
+                        users.sort((a, b) => a.ConnectionId.localeCompare(b.ConnectionId));
+
+                        // Getting the highest lexicographical ConnectionId
+                        const highestConnectionId = users[users.length - 1].ConnectionId;
+
+                        // Printing the highest lexicographical ConnectionId
+                        console.log("Leader:", highestConnectionId);
+                    })
+                    .catch(error => {
+                        console.error('Error sending request:', error);
+                    });
+            }, 10); // 10 milliseconds delay
+
+        };
+
+        ws.onclose = (event) => {
+            console.log('WebSocket closed:', event);
+            // When the WebSocket closes, remove it from the list
+            peers = peers.filter(peer => peer !== alias);
+        };
+    }
 });
