@@ -14,6 +14,6 @@
   <div class="message-text">
     <p>{message.what}</p>
 
-    <time>{ts.toLocaleTimeString()}</time>
+    <time>{message.when}</time>
   </div>
 </div>
