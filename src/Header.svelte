@@ -1,9 +1,15 @@
 <script>
-  import { username, user } from './user';
+  import { username, user, ws } from './user';
 
   function signout() {
     user.leave();
     username.set('');
+
+    // Send a 'LEAVE' message to the WebSocket server
+    if (ws && ws.readyState === WebSocket.OPEN) {
+
+      ws.close();
+    }  
   }
 
 </script>
