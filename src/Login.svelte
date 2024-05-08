@@ -14,7 +14,6 @@
         alert(err);
       } else {
         login();
-        console.log("Looooooooooooooooooog Innnnnnnnnnnn");
       }
     });
   }

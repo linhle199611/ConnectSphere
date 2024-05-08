@@ -4517,20 +4517,20 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Sign Up";
     			attr_dev(label0, "for", "username");
-    			add_location(label0, file$4, 22, 0, 402);
+    			add_location(label0, file$4, 21, 0, 342);
     			attr_dev(input0, "name", "username");
     			attr_dev(input0, "minlength", "3");
     			attr_dev(input0, "maxlength", "16");
-    			add_location(input0, file$4, 23, 0, 441);
+    			add_location(input0, file$4, 22, 0, 381);
     			attr_dev(label1, "for", "password");
-    			add_location(label1, file$4, 25, 0, 519);
+    			add_location(label1, file$4, 24, 0, 459);
     			attr_dev(input1, "name", "password");
     			attr_dev(input1, "type", "password");
-    			add_location(input1, file$4, 26, 0, 558);
+    			add_location(input1, file$4, 25, 0, 498);
     			attr_dev(button0, "class", "login");
-    			add_location(button0, file$4, 28, 0, 623);
+    			add_location(button0, file$4, 27, 0, 563);
     			attr_dev(button1, "class", "login");
-    			add_location(button1, file$4, 29, 0, 677);
+    			add_location(button1, file$4, 28, 0, 617);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4616,7 +4616,6 @@ var app = (function () {
     				alert(err);
     			} else {
     				login();
-    				console.log("Looooooooooooooooooog Innnnnnnnnnnn");
     			}
     		});
     	}
@@ -4696,13 +4695,13 @@ var app = (function () {
     			t3 = text(t3_value);
     			if (img.src !== (img_src_value = /*avatar*/ ctx[2])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "avatar");
-    			add_location(img, file$3, 12, 2, 295);
-    			add_location(p, file$3, 14, 4, 362);
-    			add_location(time, file$3, 16, 4, 389);
+    			add_location(img, file$3, 17, 2, 505);
+    			add_location(p, file$3, 19, 4, 572);
+    			add_location(time, file$3, 21, 4, 599);
     			attr_dev(div0, "class", "message-text");
-    			add_location(div0, file$3, 13, 2, 331);
+    			add_location(div0, file$3, 18, 2, 541);
     			attr_dev(div1, "class", `message ${/*messageClass*/ ctx[1]}`);
-    			add_location(div1, file$3, 11, 0, 253);
+    			add_location(div1, file$3, 16, 0, 463);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4746,7 +4745,13 @@ var app = (function () {
     	let { message } = $$props;
     	let { sender } = $$props;
     	const messageClass = message.who === sender ? "sent" : "received";
-    	const avatar = `https://avatars.dicebear.com/api/initials/${message.who}.svg`;
+
+    	//console.log("------------------------------------");
+    	//console.log("This is ChatMessage.svelte");
+    	//console.log("------------------------------------");
+    	// <time>{ts.toLocaleTimeString()}</time>
+    	const avatar = `https://api.dicebear.com/8.x/pixel-art/svg?seed=${message.who}`;
+
     	const ts = new Date(message.when);
     	const writable_props = ["message", "sender"];
 
@@ -6100,7 +6105,8 @@ var app = (function () {
     			t = space();
     			create_component(chat.$$.fragment);
     			attr_dev(div, "class", "app");
-    			add_location(div, file, 5, 0, 96);
+    			set_style(div, "background-color", "lightblue");
+    			add_location(div, file, 8, 0, 130);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -6145,13 +6151,23 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
+    	let backgroundColor = "blue";
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ Chat, Header });
+    	$$self.$capture_state = () => ({ Chat, Header, backgroundColor });
+
+    	$$self.$inject_state = $$props => {
+    		if ("backgroundColor" in $$props) backgroundColor = $$props.backgroundColor;
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
     	return [];
     }
 

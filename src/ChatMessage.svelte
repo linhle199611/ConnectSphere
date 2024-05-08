@@ -4,7 +4,12 @@
 
   const messageClass = message.who === sender ? 'sent' : 'received';
 
-  const avatar = `https://avatars.dicebear.com/api/initials/${message.who}.svg`;
+  //console.log("------------------------------------");
+  //console.log("This is ChatMessage.svelte");
+  //console.log("------------------------------------");
+  // <time>{ts.toLocaleTimeString()}</time>
+  
+  const avatar = `https://api.dicebear.com/8.x/pixel-art/svg?seed=${message.who}`;
 
   const ts = new Date(message.when);
 </script>
