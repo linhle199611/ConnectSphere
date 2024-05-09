@@ -5212,7 +5212,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (129:2) {:else}
+    // (127:2) {:else}
     function create_else_block$1(ctx) {
     	let main;
     	let login;
@@ -5250,14 +5250,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(129:2) {:else}",
+    		source: "(127:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (102:2) {#if $username}
+    // (100:2) {#if $username}
     function create_if_block$1(ctx) {
     	let main;
     	let each_blocks = [];
@@ -5432,14 +5432,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(102:2) {#if $username}",
+    		source: "(100:2) {#if $username}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (104:6) {#each messages as message (message.when)}
+    // (102:6) {#each messages as message (message.when)}
     function create_each_block(key_1, ctx) {
     	let first;
     	let chatmessage;
@@ -5492,14 +5492,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(104:6) {#each messages as message (message.when)}",
+    		source: "(102:6) {#each messages as message (message.when)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (118:4) {#if !canAutoScroll}
+    // (116:4) {#if !canAutoScroll}
     function create_if_block_1(ctx) {
     	let div;
     	let button;
@@ -5558,14 +5558,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(118:4) {#if !canAutoScroll}",
+    		source: "(116:4) {#if !canAutoScroll}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (121:8) {#if unreadMessages}
+    // (119:8) {#if unreadMessages}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -5585,7 +5585,7 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(121:8) {#if unreadMessages}",
+    		source: "(119:8) {#if unreadMessages}",
     		ctx
     	});
 
@@ -5713,7 +5713,7 @@ var app = (function () {
     	}
 
     	onMount(() => {
-    		var match = {
+    		({
     			// lexical queries are kind of like a limited RegEx or Glob.
     			".": {
     				// property selector
@@ -5722,10 +5722,10 @@ var app = (function () {
     			},
     			"-": 1, // filter in reverse
     			
-    		};
+    		});
 
     		// Get Messages
-    		db.get("chat1").map(match).once(async (data, id) => {
+    		db.get("chat2").map().once(async (data, id) => {
     			if (data) {
     				// Key for end-to-end encryption
     				const key = "#foo";
@@ -5763,8 +5763,8 @@ var app = (function () {
     	async function sendMessage() {
     		const secret = await SEA.encrypt(newMessage, "#foo");
     		const message = user.get("all").set({ what: secret });
-    		const index = new Date().toISOString();
-    		db.get("chat1").get(index).put(message);
+    		new Date().toISOString();
+    		db.get("chat2").get(currentLPtime).put(message);
     		$$invalidate(0, newMessage = "");
     		$$invalidate(3, canAutoScroll = true);
     		autoScroll();
