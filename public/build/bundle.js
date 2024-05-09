@@ -5166,7 +5166,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (129:2) {:else}
+    // (127:2) {:else}
     function create_else_block$1(ctx) {
     	let main;
     	let login;
@@ -5177,7 +5177,7 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			create_component(login.$$.fragment);
-    			add_location(main, file$2, 129, 4, 3568);
+    			add_location(main, file$2, 127, 4, 3559);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
@@ -5204,14 +5204,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(129:2) {:else}",
+    		source: "(127:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (102:2) {#if $username}
+    // (100:2) {#if $username}
     function create_if_block$1(ctx) {
     	let main;
     	let each_blocks = [];
@@ -5263,16 +5263,16 @@ var app = (function () {
     			if (if_block) if_block.c();
     			if_block_anchor = empty();
     			attr_dev(div, "class", "dummy");
-    			add_location(div, file$2, 107, 6, 3039);
-    			add_location(main, file$2, 102, 4, 2876);
+    			add_location(div, file$2, 105, 6, 3030);
+    			add_location(main, file$2, 100, 4, 2867);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "placeholder", "Type a message...");
     			attr_dev(input, "maxlength", "100");
-    			add_location(input, file$2, 111, 6, 3155);
+    			add_location(input, file$2, 109, 6, 3146);
     			attr_dev(button, "type", "submit");
     			button.disabled = button_disabled_value = !/*newMessage*/ ctx[0];
-    			add_location(button, file$2, 113, 6, 3256);
-    			add_location(form, file$2, 110, 4, 3103);
+    			add_location(button, file$2, 111, 6, 3247);
+    			add_location(form, file$2, 108, 4, 3094);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
@@ -5386,14 +5386,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(102:2) {#if $username}",
+    		source: "(100:2) {#if $username}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (104:6) {#each messages as message (message.when)}
+    // (102:6) {#each messages as message (message.when)}
     function create_each_block(key_1, ctx) {
     	let first;
     	let chatmessage;
@@ -5446,14 +5446,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(104:6) {#each messages as message (message.when)}",
+    		source: "(102:6) {#each messages as message (message.when)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (118:4) {#if !canAutoScroll}
+    // (116:4) {#if !canAutoScroll}
     function create_if_block_1(ctx) {
     	let div;
     	let button;
@@ -5469,9 +5469,9 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t = text("\n\n        👇");
     			toggle_class(button, "red", /*unreadMessages*/ ctx[4]);
-    			add_location(button, file$2, 119, 6, 3392);
+    			add_location(button, file$2, 117, 6, 3383);
     			attr_dev(div, "class", "scroll-button");
-    			add_location(div, file$2, 118, 4, 3358);
+    			add_location(div, file$2, 116, 4, 3349);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5512,14 +5512,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(118:4) {#if !canAutoScroll}",
+    		source: "(116:4) {#if !canAutoScroll}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (121:8) {#if unreadMessages}
+    // (119:8) {#if unreadMessages}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -5539,7 +5539,7 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(121:8) {#if unreadMessages}",
+    		source: "(119:8) {#if unreadMessages}",
     		ctx
     	});
 
@@ -5567,7 +5567,7 @@ var app = (function () {
     			div = element("div");
     			if_block.c();
     			attr_dev(div, "class", "container");
-    			add_location(div, file$2, 100, 0, 2830);
+    			add_location(div, file$2, 98, 0, 2821);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5667,7 +5667,7 @@ var app = (function () {
     	}
 
     	onMount(() => {
-    		var match = {
+    		({
     			// lexical queries are kind of like a limited RegEx or Glob.
     			".": {
     				// property selector
@@ -5676,10 +5676,10 @@ var app = (function () {
     			},
     			"-": 1, // filter in reverse
     			
-    		};
+    		});
 
     		// Get Messages
-    		db.get("chat").map(match).once(async (data, id) => {
+    		db.get("chat2").map().once(async (data, id) => {
     			if (data) {
     				// Key for end-to-end encryption
     				const key = "#foo";
@@ -5717,8 +5717,8 @@ var app = (function () {
     	async function sendMessage() {
     		const secret = await SEA.encrypt(newMessage, "#foo");
     		const message = user.get("all").set({ what: secret });
-    		const index = new Date().toISOString();
-    		db.get("chat").get(index).put(message);
+    		new Date().toISOString();
+    		db.get("chat2").get(currentLPtime).put(message);
     		$$invalidate(0, newMessage = "");
     		$$invalidate(3, canAutoScroll = true);
     		autoScroll();
