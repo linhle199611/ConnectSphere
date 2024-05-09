@@ -49,9 +49,7 @@
     };
 
     // Get Messages
-    db.get('chat1')
-      .map(match)
-      .once(async (data, id) => {
+    db.get('chat2').map().once(async (data, id) => {
         if (data) {
           // Key for end-to-end encryption
           const key = '#foo';
@@ -91,7 +89,7 @@
     const secret = await SEA.encrypt(newMessage, '#foo');
     const message = user.get('all').set({ what: secret });
     const index = new Date().toISOString();
-    db.get('chat1').get(index).put(message);
+    db.get('chat2').get(currentLPtime).put(message);
     newMessage = '';
     canAutoScroll = true;
     autoScroll();
