@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 ```
-Leo did
-Jason did
-Paul did
+Leo did Timestamp
+Jason did Broadcast and Leader Election
+Paul attempted gossip and distributed snapshop
 ```
