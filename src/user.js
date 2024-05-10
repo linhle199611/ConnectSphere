@@ -67,6 +67,7 @@ db.on('auth', async (event) => {
 
 
     ws.onmessage = (event) => {
+      console.log(`Received broadcast from AWS API Gateway`);
       fetchData();
       // console.log('Message received:', event.data);  // debugging print
     };
