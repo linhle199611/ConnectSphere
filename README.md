@@ -8,3 +8,7 @@ git clone <this-repo>
 npm install
 npm run dev
 ```
+
+Leo did
+Jason did
+Paul did
