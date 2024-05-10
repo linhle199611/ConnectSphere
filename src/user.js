@@ -26,7 +26,7 @@ db.on('auth', async (event) => {
     username.set(alias);
     console.log(`signed in as ${alias}`);
 
-    ws = new WebSocket('wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production/');
+    ws = new WebSocket(`wss://yhk8r8gnfh.execute-api.us-west-1.amazonaws.com/production?username=${alias}`);
     // Define a function to fetch data
     function fetchData() {
       const requestURL = 'https://rnfv2duzvjfbkcaoc6u4rcdp3a0pwtji.lambda-url.us-west-1.on.aws/?secret=sdfioghwsdf9uio23';
@@ -42,15 +42,15 @@ db.on('auth', async (event) => {
         return response.json(); // Assuming the server responds with JSON
       })
       .then(data => {
-        console.log('Data received:', data);
+        // console.log('Data received:', data);
         const users = data.users;
         console.log(`userlist = `, users);
         if (users && users.length > 0) { // Check if users array is not empty
-          users.sort((a, b) => a.ConnectionId.localeCompare(b.ConnectionId));
+          users.sort((a, b) => a.username.localeCompare(b.username));
 
-          const highestConnectionId = users[users.length - 1].ConnectionId;
+          const highestUsername = users[users.length - 1].username;
 
-          console.log("Leader connectionID:", highestConnectionId);
+          console.log("Leader username:", highestUsername);
         } else {
           console.log("No users found.");
         }
@@ -66,11 +66,27 @@ db.on('auth', async (event) => {
     };
 
 
-    ws.onmessage = (event) => {
-      console.log(`Received broadcast from AWS API Gateway`);
+    // ws.onmessage = (event) => {
+    //   console.log(`Received broadcast from AWS API Gateway`);
+    //   fetchData();
+    //   // console.log('Message received:', event.data);  // debugging print
+    // };
+    ws.onmessage = function(event) {
+      console.log('Received broadcast from AWS');
       fetchData();
-      // console.log('Message received:', event.data);  // debugging print
-    };
+      // try {  // debugging prints
+      //     const parsedData = JSON.parse(event.data);
+      //     console.log('Parsed data:', parsedData);
+
+      //     if (parsedData.message && Array.isArray(parsedData.message)) {
+      //         parsedData.message.forEach((entry, index) => {
+      //             console.log(`Entry ${index + 1}: ConnectionId = ${entry.ConnectionId}, Username = ${entry.username}`);
+      //         });
+      //     }
+      // } catch (error) {
+      //     console.error('Error parsing JSON:', error);
+      // }
+  };
 
 
 
